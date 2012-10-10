@@ -1,0 +1,13 @@
+{
+  "name": "sockproxy",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node public"
+  },
+  "dependencies": {
+    "express": "3.0.0beta7",
+	"socket.io": ">0.9",
+	"socket.io-client": ">0.9"
+  }
+}
