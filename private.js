@@ -26,7 +26,8 @@ function forwardRequest(desc) {
     host: 'localhost',
     port: 3100,
     path: desc.url,
-    method: desc.method
+    method: desc.method,
+    headers: desc.headers
   };
 
   var req = http.request(options, function (res) {
@@ -44,6 +45,9 @@ function forwardRequest(desc) {
           content.push(chunk);
         });
   });
+
+  if (desc.body)
+    req.write(new Buffer(desc.body, 'base64'));
 
   req.end();
 }
