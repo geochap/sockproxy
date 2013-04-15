@@ -46,6 +46,9 @@ function forwardRequest(desc) {
         });
   });
 
+  if (desc.body)
+    req.write(new Buffer(desc.body, 'base64'));
+
   req.end();
 }
 

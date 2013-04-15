@@ -13,6 +13,16 @@ app.configure(function () {
   app.set('port', process.env.PORT || 3200);
   app.use(express.favicon());
   app.use(express.logger('dev'));
+  app.use(function(req, res, next) {
+    var content = [];
+    req.on('data', function(chunk) { 
+      content.push(chunk);
+    });
+    req.on('end', function() {
+        req.rawBody = Buffer.concat(content);
+        next();
+    });
+  });
   app.use(express.bodyParser());
   app.use(express.cookieParser());
   app.use(express.methodOverride());
@@ -23,7 +33,7 @@ app.configure('development', function () {
   app.use(express.errorHandler());
 });
 
-app.get('*', function (req, res, next) {
+app.all('*', function (req, res, next) {
   proxyRequest(req, function (err, data) {
     if (err)
       sendError(err);
@@ -36,6 +46,7 @@ app.get('*', function (req, res, next) {
     }
   });
 });
+
 
 var server = http.createServer(app);
 
@@ -66,9 +77,10 @@ function proxyRequest(req, cb) {
     id:_requestid++,
     method: req.method,
     url: req.url,
-    headers: req.headers
+    headers: req.headers,
+    body: req.rawBody.toString('base64')
   };
-  
+ 
   _cbs[request.id] = cb;
 
   _socket.emit('request', request);
