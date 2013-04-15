@@ -30,7 +30,7 @@ app.all('*', function(req, res, next) {
   next();
  });
 
-app.get('*', function (req, res, next) {
+app.all('*', function (req, res, next) {
   proxyRequest(req, function (err, data) {
     if (err)
       sendError(err);
